@@ -1,0 +1,17 @@
+{
+  "name": "gosleep",
+  "version": "0.0.1",
+  "private": true,
+  "author": {
+    "name": "Clement"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/electron ."
+  },
+  "dependencies": {
+    "electron": "1.6.8"
+  },
+  "devDependencies": {
+    "devtron": "^1.4.0"
+  }
+}

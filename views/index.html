@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>API Node+Angular</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Angular 1.6.4 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+    <!-- Kube CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/css/kube.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
+    <style>
+        .choixselector input{
+            display: none;
+        };
+
+        .choixselector input:active +.test{opacity: .9;}
+        .choixselector input:checked +.test{
+            -webkit-filter: none;
+            -moz-filter: none;
+                    filter: none;
+        }
+        .test{
+            cursor:pointer;
+            -webkit-transition: all 100ms ease-in;
+            -moz-transition: all 100ms ease-in;
+                    transition: all 100ms ease-in;
+            -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
+            -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
+                    filter: brightness(1.8) grayscale(1) opacity(.7);
+        }
+        .test:hover{
+            -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+            -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+                    filter: brightness(1.2) grayscale(.5) opacity(.9);
+        }
+</style>
+</head>
+<body style="width: 640px; height: 480px; margin: auto;">
+    <div style="height: 40%">
+        <div class="row gutters around choixselector" style="flex-direction: inherit; margin-left: 2%">
+            <div class="col">
+                <!-- POWER OFF -->
+                <input type="radio" name="rdchoix" value="off" id="rdpoweroff" />
+                <label for="rdpoweroff" class="test"><i class="fa fa-power-off fa-5x" aria-hidden="true"></i></label>
+            </div>
+            <div class="col">
+                <!-- SLEEP -->
+                <input type="radio" name="rdchoix" value="sleep" id="rdsleep" />
+                <label for="rdsleep" class="test"><i class="fa fa-moon-o fa-5x" aria-hidden="true"></i></label>
+            </div>
+            <div class="col">
+                <!-- LOCK SESSION -->
+                <input type="radio" name="rdchoix" value="logoff" id="rdlogoff" />
+                <label for="rdlogoff" class="test"><i class="fa fa-lock fa-5x" aria-hidden="true"></i></label>
+            </div>
+            <div class="col">
+                <!-- RESTART -->
+                <input type="radio" name="rdchoix" value="restart" id="rdrestart" />
+                <label for="rdrestart" class="test"><i class="fa fa-question-circle-o fa-5x" aria-hidden="true"></i></label>
+            </div>
+        </div>
+    </div>
+    <div style="height: 20%">
+        <div id="msgerror" class="message error" style="display: none;"></div>
+        <div id="msgsuccess" class="message success" style="display: none;"></div>
+    </div>
+    <div style="height: 40%">
+        <div class="row">
+            <div class="col col-2 offset-2 form-item">
+                <label>Heure <span class="desc">...</span></label>
+                <input type="number" id="hours" min="1" max="24" />
+                <span class="desc">24h max</span>
+            </div>
+            <div class="col col-2 offset-1 form-item">
+                <label>Minutes</label>
+                <input type="number" id="minutes" min="1" max="60" />
+            </div>
+            <div class="col col-2 offset-1 form-item">
+                <label>Secondes</label>
+                <input type="number" id="seconds" min="1" max="60" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-2 offset-3">
+                <button class="button outline w100" id="go">Start</button>
+            </div>
+            <div class="col col-2 offset-2">
+                <button class="button outline w100" id="cancel">Cancel</button>
+            </div>
+            <span style="margin-left: 25%;">
+                <small>
+                    <input type="checkbox" id="force" />
+                    Interrompres tous les programmes en cours
+                </small>
+            </span>
+        </div>
+    </div>
+
+    <script src="../renderer-process/renderer.js"></script>
+
+    <!-- Kube JS + jQuery are used for some functionality, but are not required for the basic setup -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>window.jQuery = window.$ = module.exports;</script>
+    <script src="../assets/js/kube.js"></script>
+</body>
+</html>
