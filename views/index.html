@@ -1,89 +1,104 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" ng-app="app">
 <head>
     <title>API Node+Angular</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Angular 1.6.4 -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-
-    <!-- Kube CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/css/kube.min.css" />
+    <!-- Photon CSS -->
+    <link rel="stylesheet" href="../assets/css/photon.css">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
 
+    <!-- Style -->
     <link rel="stylesheet" href="../assets/css/style.css" />
 
 </head>
-<body style="width: 640px; height: 480px; margin: auto;">
-    <div style="height: 40%">
-        <div class="row gutters around choixselector" style="flex-direction: inherit; margin-left: 2%">
-            <div class="col">
-                <!-- POWER OFF -->
-                <input type="radio" name="rdchoix" value="off" id="rdpoweroff" />
-                <label for="rdpoweroff" class="test"><i class="fa fa-power-off fa-5x" aria-hidden="true"></i></label>
+<body ng-controller="GoSleep as vm">
+    <header class="toolbar toolbar-header">
+        <h1 class="title">GoSleep, ou fixe les heures d'exctinctions</h1>
+    </header>
+    <div class="window-content" style="height: 408px;">
+        <form ng-model="vm.form" name="form" novalidate>
+            <div class="pane-group">
+                <div class="pane-mini choixselector center">
+                    <!-- POWER OFF -->
+                    <div class="m-t20 p-b10">
+                        <input type="radio" name="rdchoix" value="off" id="rdpoweroff" ng-model="vm.choix" ng-required="!vm.choix" />
+                        <label for="rdpoweroff" class="rdchoix maxwidth red"><i class="fa fa-power-off fa-5x" aria-hidden="true"></i></label>
+                    </div>
+                    <!-- RESTART -->
+                    <div class="p-b10">
+                        <input type="radio" name="rdchoix" value="restart" id="rdrestart" ng-model="vm.choix" ng-required="!vm.choix" />
+                        <label for="rdrestart" class="rdchoix maxwidth red"><i class="fa fa-moon-o fa-5x" aria-hidden="true"></i></label>
+                    </div>
+                </div>
+                <div class="pane center">
+                    <div class="m-t10 m-b5">
+                        <input type="number" id="hours" name="hours" class="w80 center" placeholder="Heures"
+                               ng-class="{'error': form.hours.$invalid && !form.hours.$pristine}" 
+                               min="0" ng-max="23" step="1" ng-model="vm.hours" />
+                    </div>
+                    <div class="m-b5">
+                        <input type="number" id="minutes" name="minutes" class="w80 center" placeholder="Minutes" 
+                               ng-class="{'error': form.minutes.$invalid && !form.minutes.$pristine}"
+                               min="0" ng-max="60" step="1" ng-model="vm.minutes" />
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" id="force" ng-model="vm.force" />
+                            Forcé (option -f)
+                        </label>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary w80 m-b2" id="go" ng-click="vm.start()" 
+                                ng-disabled="form.$invalid" ng-class="{'disabled': form.$invalid}">
+                                Start
+                        </button>
+                    </div>
+                    <div class="m-b5">
+                        <button class="btn btn-primary w80" id="cancel" ng-click="vm.stop()" 
+                                ng-disabled="form.$invalid" ng-class="{'disabled': form.$invalid}">
+                                Cancel
+                        </button>
+                    </div>
+                    <div>
+                        <div id="msg" class="message w80 m-l10" 
+                            ng-class="{'success': vm.msgSuccess, 'error': !vm.msgSuccess}" 
+                            ng-if="vm.msg" ng-bind="vm.msg">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col">
-                <!-- SLEEP -->
-                <input type="radio" name="rdchoix" value="sleep" id="rdsleep" />
-                <label for="rdsleep" class="test"><i class="fa fa-moon-o fa-5x" aria-hidden="true"></i></label>
-            </div>
-            <div class="col">
-                <!-- LOCK SESSION -->
-                <input type="radio" name="rdchoix" value="logoff" id="rdlogoff" />
-                <label for="rdlogoff" class="test"><i class="fa fa-lock fa-5x" aria-hidden="true"></i></label>
-            </div>
-            <div class="col">
-                <!-- RESTART -->
-                <input type="radio" name="rdchoix" value="restart" id="rdrestart" />
-                <label for="rdrestart" class="test"><i class="fa fa-question-circle-o fa-5x" aria-hidden="true"></i></label>
-            </div>
-        </div>
+        </form>
     </div>
-    <div style="height: 20%">
-        <div id="msgerror" class="message error" style="display: none;"></div>
-        <div id="msgsuccess" class="message success" style="display: none;"></div>
-    </div>
-    <div style="height: 40%">
-        <div class="row">
-            <div class="col col-2 offset-2 form-item">
-                <label>Heure <span class="desc">...</span></label>
-                <input type="number" id="hours" min="1" max="24" />
-                <span class="desc">24h max</span>
-            </div>
-            <div class="col col-2 offset-1 form-item">
-                <label>Minutes</label>
-                <input type="number" id="minutes" min="1" max="60" />
-            </div>
-            <div class="col col-2 offset-1 form-item">
-                <label>Secondes</label>
-                <input type="number" id="seconds" min="1" max="60" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-2 offset-3">
-                <button class="button outline w100" id="go">Start</button>
-            </div>
-            <div class="col col-2 offset-2">
-                <button class="button outline w100" id="cancel">Cancel</button>
-            </div>
-            <span style="margin-left: 25%;">
-                <small>
-                    <input type="checkbox" id="force" />
-                    Interrompres tous les programmes en cours
-                </small>
-            </span>
-        </div>
-    </div>
+    <footer class="toolbar toolbar-footer">
+        <h1 class="title">GoSleep - make by 0urs</h1>
+    </footer>
 
-    <script src="../renderer-process/renderer.js"></script>
+    <!-- Angular 1.6.x -->
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/angular-messages/angular-messages.js"></script>
 
-    <!-- Kube JS + jQuery are used for some functionality, but are not required for the basic setup -->
+    <!-- Angular Core -->
+    <script src="../app/core.js"></script>
+
+    <!-- Angular Config -->
+    <script src="../app/config/config.js"></script>
+
+    <!-- Angular factory -->
+    <script src="../app/factory/factorymsg.js"></script>
+    <script src="../app/factory/factoryexec.js"></script>
+
+    <!-- Angular controller -->
+    <script src="../app/controller/gosleepcontroller.js"></script>
+
+    <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>window.jQuery = window.$ = module.exports;</script>
-    <script src="../assets/js/kube.js"></script>
+
 </body>
 </html>
